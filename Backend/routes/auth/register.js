@@ -25,21 +25,21 @@ router.post('/', async (req, res) => {
     if (duplicate) {
       return res.status(409).json({ message: 'Email is already in use.' });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+// ma hoa pass//
+    const hashedPassword = await bcrypt.hash(password, 10); //ma hoa voi salt = 10 10^2 lan//
+// tao user moi//
     const user = await User.create({
       fullName: fullName.trim(),
       email: normalizedEmail,
       password: hashedPassword,
     });
-
+// tao thanh cong token va tra ve tt ng dung//
     const token = jwt.sign(
       { userId: user._id.toString(), email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-
+// 
     return res.status(201).json({
       message: 'Sign up successful.',
       token,

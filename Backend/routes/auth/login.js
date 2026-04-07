@@ -23,13 +23,13 @@ router.post('/', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
-// 
+// so sanh pass xem dung ko//
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
+//neu o dung tra ve loi//
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
-
+// neu dung tao token va tra ve tt ng dung//
     const token = jwt.sign(
       { userId: user._id.toString(), email: user.email },
       process.env.JWT_SECRET,

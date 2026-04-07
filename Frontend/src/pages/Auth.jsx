@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'http://localhost:5000';
 // bien luu tru gia tri form khi submit ok//
@@ -9,7 +10,9 @@ const initialFormState = {
 };
 // 
 const Auth = ({ onAuthSuccess }) => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLogin = location.pathname !== '/register';
   const [formData, setFormData] = useState(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState('');
@@ -20,9 +23,9 @@ const Auth = ({ onAuthSuccess }) => {
   };
 // chuyen doi giua login and register//
   const toggleMode = () => {
-    setIsLogin((current) => !current);
     setFeedback('');
     setFormData(initialFormState);
+    navigate(isLogin ? '/register' : '/login');
   };
 // xu ly khi submit form//
   const handleSubmit = async (e) => {
@@ -64,11 +67,11 @@ const Auth = ({ onAuthSuccess }) => {
           onAuthSuccess(data.user);
         }
       } else {
-        setIsLogin(true);
         setFormData({
           ...initialFormState,
           email: formData.email,
         });
+        navigate('/login');
       }
     } catch (error) {
       setFeedback(error.message || 'Cannot connect to backend server.');
@@ -79,9 +82,9 @@ const Auth = ({ onAuthSuccess }) => {
 
   return (
     <div className="flex min-h-screen bg-white font-sans">
-      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-yellow-600 to-indigo-900 justify-center items-center relative overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-300 opacity-20 rounded-full blur-3xl"></div>
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top_left,#3A3A3A_0%,#111111_45%,#000000_100%)] md:flex">
+        <div className="absolute top-[-10%] left-[-10%] h-96 w-96 rounded-full bg-white/10 blur-3xl"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] h-96 w-96 rounded-full bg-white/5 blur-3xl"></div>
 
         <div className="text-center text-white z-10 px-12">
           <h1 className="text-5xl font-extrabold tracking-tight">AINOTES</h1>
@@ -89,14 +92,14 @@ const Auth = ({ onAuthSuccess }) => {
         </div>
       </div>
 
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-gray-50">
-        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all duration-300">
+      <div className="flex w-full items-center justify-center bg-neutral-100 p-8 sm:p-12 md:w-1/2">
+        <div className="w-full max-w-md rounded-3xl border border-neutral-200 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 sm:p-10">
           <div className="text-center mb-10">
-            <h1 className="md:hidden text-4xl font-extrabold text-blue-600 mb-4">AINOTES</h1>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="mb-4 text-4xl font-extrabold text-black md:hidden">AINOTES</h1>
+            <h2 className="mb-2 text-3xl font-bold text-black">
               {isLogin ? 'Welcome to AINotes!' : 'Create an account'}
             </h2>
-            <p className="text-gray-500 font-medium mt-2">
+            <p className="mt-2 font-medium text-neutral-500">
               {isLogin ? 'Please sign in to continue' : 'Start your journey with AINOTES today'}
             </p>
           </div>
@@ -104,41 +107,41 @@ const Auth = ({ onAuthSuccess }) => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
               <div className="animate-fade-in-down">
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
+                <label className="mb-1.5 block text-sm font-semibold text-neutral-800">Full Name</label>
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder="Johnny Juzang"
-                  className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full rounded-xl border border-neutral-300 bg-neutral-100 px-4 py-3.5 transition-all duration-200 focus:border-black focus:bg-white focus:outline-none"
                   required={!isLogin}
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+              <label className="mb-1.5 block text-sm font-semibold text-neutral-800">Email Address</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="name@example.com"
-                className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full rounded-xl border border-neutral-300 bg-neutral-100 px-4 py-3.5 transition-all duration-200 focus:border-black focus:bg-white focus:outline-none"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+              <label className="mb-1.5 block text-sm font-semibold text-neutral-800">Password</label>
               <input
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="At least 6 characters"
-                className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full rounded-xl border border-neutral-300 bg-neutral-100 px-4 py-3.5 transition-all duration-200 focus:border-black focus:bg-white focus:outline-none"
                 required
                 minLength={6}
               />
@@ -150,24 +153,24 @@ const Auth = ({ onAuthSuccess }) => {
             </div>
 
             {feedback && (
-              <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-700">{feedback}</p>
+              <p className="rounded-xl bg-neutral-100 px-4 py-3 text-sm text-neutral-700">{feedback}</p>
             )}
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gray-600 text-white font-bold py-3.5 px-4 rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-0.5 transition-all duration-200 mt-6 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+              className="mt-6 w-full rounded-xl bg-black px-4 py-3.5 font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-lg hover:shadow-black/20 disabled:cursor-not-allowed disabled:bg-neutral-500 disabled:hover:translate-y-0 disabled:hover:shadow-none"
             >
               {isSubmitting ? 'Please wait...' : isLogin ? 'Sign In' : 'Sign Up'}
             </button>
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-gray-600 font-medium">
+            <p className="font-medium text-neutral-600">
               {isLogin ? "Don't have an account? " : 'Already have an account? '}
               <button
                 onClick={toggleMode}
-                className="text-blue-600 font-bold hover:text-blue-800 hover:underline focus:outline-none transition"
+                className="font-bold text-black transition hover:text-neutral-700 hover:underline focus:outline-none"
               >
                 {isLogin ? 'Sign up now' : 'Sign in'}
               </button>
